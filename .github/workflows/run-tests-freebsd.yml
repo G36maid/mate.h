@@ -21,7 +21,7 @@ jobs:
         uses: vmactions/freebsd-vm@v1
         with:
           usesh: true
-          release: '14.0'
+          release: '14.2'
           run: |
             pkg update -f
             pkg install -y gcc clang tcc bash lua52 raylib gmake
