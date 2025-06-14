@@ -1,0 +1,43 @@
+name: Run Tests FreeBSD
+
+on:
+  push:
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - '.github/workflows/run-tests-freebsd.yml'
+  pull_request:
+
+jobs:
+  test-freebsd:
+    runs-on: ubuntu-latest
+    name: FreeBSD Tests
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Tests in FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          usesh: true
+          release: '14.0'
+          run: |
+            pkg update -f
+            pkg install -y gcc clang tcc bash lua52 raylib gmake
+
+            for CC in gcc clang tcc; do
+              for test in 01-basic-build 02-custom-config 03-generic-flags 04-raylib-build 05-samurai-source-code 06-lua-source-code 07-raylib-source-code; do
+                if [ "$CC" = "tcc" ] && [ "$test" = "07-raylib-source-code" ]; then
+                  echo "Skipping $test for TCC"
+                  continue
+                fi
+
+                echo "[$CC] Running $test..."
+                cd tests/$test || exit 1
+                $CC mate.c -o mate || exit 1
+                ./mate || exit 1
+                cd - > /dev/null || exit 1
+              done
+            done
+
