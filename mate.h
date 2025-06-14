@@ -72,8 +72,6 @@
 #    define PLATFORM_LINUX
 #  elif defined(__APPLE__) || defined(__MACH__)
 #    define PLATFORM_MACOS
-#  elif defined(__FreeBSD__)
-#    define PLATFORM_FREEBSD
 #  elif defined(__EMSCRIPTEN__)
 #    define PLATFORM_EMSCRIPTEN
 #  else
@@ -6746,7 +6744,7 @@ static void mateAddFrameworkPaths(String *targetIncludes, StringVector *includes
     StringBuilderAppend(mateState.arena, &builder, targetIncludes);
     StringBuilderAppend(mateState.arena, &builder, &S(" "));
   }
-
+ 
   // GCC/Clang format: -F"path"
   for (size_t i = 0; i < includes->length; i++) {
     String currInclude = VecAt((*includes), i);
